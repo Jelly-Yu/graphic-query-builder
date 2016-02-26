@@ -2,11 +2,11 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 var uuidGenerator = require('node-uuid');
-const KEYSPACE_NAME = '';
+const KEYSPACE_NAME = 'keyspace1';
 
 console.log('Initializing Cassandra connection...');
 var cassandra = require('cassandra-driver');
-var cassandraClient = new cassandra.Client({ contactPoints: [''], keyspace: ''});
+var cassandraClient = new cassandra.Client({ contactPoints: ['localhost'], keyspace: KEYSPACE_NAME});
 cassandraClient.connect(function(err, result){
 	if(err){
 		cassandraClient.shutdown();
@@ -108,7 +108,7 @@ app.post('/search', function(req,res){
 		});
 			res.status(400).send({msg: err});
 			cassandraClient.shutdown();
-			return console.error('There was error while trying to retrieve data from keyspace: ', err);
+			return console.error('There was error while trying to retrieve data from keyspace: '+KEYSPACE_NAME, err);
 
 		}else{
 			cassandraClient.on('log', function(level, className, message, furtherInfo) {

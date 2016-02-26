@@ -5,8 +5,8 @@ var allSelected = false;
 var tableStr = "",
     fieldStr = "",
     queryStatement = "",
-    serverURL = "",
-    ksName = "";
+    serverURL = "http://localhost:1500/",
+    ksName = "keyspace1.";
 
 $(document).ready(function() {
 
