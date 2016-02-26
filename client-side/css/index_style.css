@@ -192,3 +192,8 @@ table th.resizing {
 #title{
     display:inline;
 }
+#main_panel{
+    background-color: white;
+    border-radius: 20px;
+    border: 2px solid #73AD21;
+}
