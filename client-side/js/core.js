@@ -1,6 +1,3 @@
-/**
- * Created by ct74048 on 1/7/2016.
- */
 var cells = [];
 var tableFields = [];
 var tables = new Map();

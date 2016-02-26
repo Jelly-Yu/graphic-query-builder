@@ -1,6 +1,3 @@
-/**
- * Created by ct74048 on 1/14/2016.
- */
 var queryStr = "";
 var app = angular.module('app_search', ['ngSanitize', 'queryBuilder']);
 app.controller('QueryBuilderCtrl', ['$scope', function ($scope) {
