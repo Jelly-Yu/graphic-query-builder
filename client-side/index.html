@@ -124,7 +124,6 @@
                                             <div class="form-inline">
                                                 <select ng-options="o.name as o.name for o in operators" ng-model="group.operator" class="form-control input-sm custom_select"></select>
                                                 <button style="margin-left: 5px" ng-click="addCondition()" class="btn btn-sm btn-success custom_btn"><span class="glyphicon glyphicon-plus-sign"></span> Add Condition</button>
-                                                <button style="margin-left: 5px" ng-click="removeGroup()" class="btn btn-sm btn-danger custom_btn"><span class="glyphicon glyphicon-minus-sign"></span> Remove Group</button>
                                             </div>
                                             <div class="group-conditions">
                                                 <div ng-repeat="rule in group.rules | orderBy:'index' track by $index" class="condition">
@@ -133,7 +132,7 @@
                                                             <query-builder group="rule.group"></query-builder>
                                                         </div>
                                                         <div ng-switch-default="ng-switch-default">
-                                                            <div class="form-inline">
+                                                            <div class="form-inline" id="{{ 'condition-' + $index }}" >
                                                                 <select ng-focus="update()" ng-options="t.name as t.name for t in fields" ng-model="rule.field" class="form-control input-sm custom_select"></select>
                                                                 <select style="margin-left: 5px" ng-options="c.name as c.name for c in conditions" ng-model="rule.condition" class="form-control input-sm custom_select"></select>
                                                                 <input style="margin-left: 5px" type="text" ng-model="rule.data" class="form-control input-sm custom_select"/>

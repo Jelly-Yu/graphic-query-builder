@@ -222,7 +222,14 @@ var allSelected = false;
             console.log(data);
             cells = data.slice();
             //console.log(items);
-            populateTable();
+            if(cells.length !== 0){
+                populateTable();
+            }else{
+                $("#result_info").html("<p>No matches.</p>");
+                $("#table_header").html("");
+                $("#table_rows").html("");
+            }
+            
         })
         .fail(function(){
             $("#result_info").html("<p>Failed to parse the query.</p>");

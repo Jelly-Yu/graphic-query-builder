@@ -45,15 +45,12 @@ queryBuilder.directive('queryBuilder', ['$compile', function ($compile) {
             content = element.contents().remove();
             return function (scope, element, attrs) {
                 scope.operators = [
-                    { name: 'AND' },
-                    { name: 'OR' }
+                    { name: 'AND' }
                 ];
 
-                console.log("xxx:"+tableFields.slice());
-               scope.fields = tableFields.slice();
-
-                console.log(scope.fields);
-
+                //console.log("xxx:"+tableFields.slice());
+                scope.fields = tableFields.slice();
+                //console.log(scope.fields);
                 scope.conditions = [
                     { name: '=' },
                     { name: '<' },
@@ -64,7 +61,7 @@ queryBuilder.directive('queryBuilder', ['$compile', function ($compile) {
                 ];
 
                 scope.addCondition = function () {
-                    console.log("add condition is hit");
+                    //console.log("add condition is hit");
                     if(typeof tableFields.slice()[0] === 'undefined'){
                         console.log("data is not available currently");
                     }else{
@@ -79,7 +76,7 @@ queryBuilder.directive('queryBuilder', ['$compile', function ($compile) {
                 };
 
                 scope.removeCondition = function (index) {
-                    console.log("remove condition is hit");
+                    //console.log("remove condition is hit");
                     scope.group.rules.splice(index, 1);
                 };
                 scope.update = function(){
