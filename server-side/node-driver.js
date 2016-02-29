@@ -71,7 +71,7 @@ app.get('/tables', function(req,res){
 
 });
 
-var getColumns = 'SELECT column_name FROM system.schema_columns WHERE columnfamily_name = ? ALLOW FILTERING'
+var getColumns = 'SELECT column_name FROM system.schema_columns WHERE columnfamily_name = ?  AND keyspace_name =\''+KEYSPACE_NAME +'\' ALLOW FILTERING'
 
 app.get('/tables/:columns', function(req,res){
 	cassandraClient.execute(getColumns,[req.query.table], {prepare : true}, function(err, result){
@@ -86,14 +86,14 @@ app.get('/tables/:columns', function(req,res){
 });
 
 app.get('/metadata/:description', function(req,res){
-	cassandraClient.metadata.getTable(KEYSPACE_NAME, [req.query.table],  {prepare : true},function(err, tableInfo){
+	cassandraClient.metadata.getTable(KEYSPACE_NAME, [req.query.table],function(err, tableInfo){
 		if(err){
 			console.error('There was error while trying to retrieve description of table');
 			res.status(404).send({msg:err});
 			
 		}else{
 			console.log('Obtained table description:', tableInfo.partitionKeys);
-			res.send(tableInfo.partitionKeys, 200);
+			res.send(tableInfo, 200);
 		}
 	});
 });
@@ -101,19 +101,19 @@ app.get('/metadata/:description', function(req,res){
 app.post('/search', function(req,res){
 	var querystatement = req.body.qStr;
 	console.log("Query statement posted:" + querystatement);
-	cassandraClient.execute(querystatement, {prepare : true, traceQuery:true}, function(err, result){		
+	cassandraClient.execute(querystatement + 'ALLOW FILTERING', {prepare : true, traceQuery:true}, function(err, result){		
 		if(err){
-			cassandraClient.on('error', function(level, className, message, furtherInfo) {
-			console.log('error event: %s -- %s', level, message);
-		});
+            cassandraClient.on('error', function(level, className, message, furtherInfo) {
+                console.log('error event: %s -- %s', level, message);
+            });
 			res.status(400).send({msg: err});
 			cassandraClient.shutdown();
 			return console.error('There was error while trying to retrieve data from keyspace: '+KEYSPACE_NAME, err);
 
 		}else{
 			cassandraClient.on('log', function(level, className, message, furtherInfo) {
-			console.log('log event: %s -- %s', level, message);
-		});
+                console.log('log event: %s -- %s', level, message);
+            });
 			console.log('Obtained row:', result.rows);
 			res.send(result.rows,200);
 		}
