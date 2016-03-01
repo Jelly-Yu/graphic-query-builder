@@ -102,18 +102,23 @@
                                 <span ng-bind-html="output"></span>
                             </div>
                             <p class="tag">STEP 1</p>
-                            <h4 class="hint">Please select the table(s).</h4>
+                            <h4 class="hint">Please select the keyspace.</h4>
+                            <div id="keyspace_selector">
+                                <select id="ks_select" name="character"></select>
+                            </div>
+                            
+                            <p class="tag">STEP 2</p>
+                            <h4 class="hint">Please select the table.</h4>
                             <div id="table_selector">
                                 <select id="table_select" name="character"></select>
                             </div>
 
-                            <p class="tag">STEP 2</p>
+                            <p class="tag">STEP 3</p>
                             <h4 class="hint">Please select the field(s).</h4>
                             <div id="field_selector">
                                 <select id="field_select" name="character" multiple="multiple"></select>
-
                             </div>
-                            <p class="tag">STEP 3</p>
+                            <p class="tag">STEP 4</p>
                             <h4 class="hint">Please set rules.</h4>
                             <div>
                                 <query-builder group="filter.group"></query-builder>

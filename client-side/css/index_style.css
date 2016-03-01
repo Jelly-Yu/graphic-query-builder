@@ -46,7 +46,7 @@ footer{
     background-color: #fcf8e3;
     border-color: rgb(220, 200, 150);
 }
-#table_selector,#field_selector{
+#table_selector,#field_selector, #keyspace_selector{
     width:50%;
     margin-left:5%;
     margin-bottom:20px;

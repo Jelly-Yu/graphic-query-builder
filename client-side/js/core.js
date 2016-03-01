@@ -3,40 +3,39 @@ var allSelected = false;
 (function() {     
     var cells = [];
     var tables = new Map();
+    var keyspaces = new Map();
     var tableStr = "",
         fieldStr = "",
         queryStatement = "",
         serverURL = "http://localhost:1500/",
-        ksName = "keyspace1.";
+        ksName = "";
     $(document).ready(function() {
         //create a floating query output area
         $(window).scroll(function(){
             $("#query_str").stop().animate({"marginTop": ($(window).scrollTop()) + "px", "marginLeft":($(window).scrollLeft()) + "px"}, "slow" );
         });
-
-
-        //get all tables in db.test_keyspace 
+        //get all keyspaces in db
         $.ajax({
-            type:"GET",
-            url: serverURL + 'tables',
+         type:"GET",
+            url: serverURL + 'keyspaces',
             success:function(data) {
                 console.log(data);
                 //var tbs = $.parseJSON(data);
                 for(var i =0; i< data.length;i++){
-                    var name = data[i].columnfamily_name;
+                    var name = data[i].keyspace_name;
                     console.log(name);
-                    tables.set(name, []);
+                    keyspaces.set(name, []);
                 }
 
                 //initialize table select
-                $('#field_select').searchableOptionList();
-                $('#table_select').searchableOptionList({
+                //$('#table_select').searchableOptionList();
+                $('#ks_select').searchableOptionList({
                     //format data for option list
                     data:function(){
-                        dataInSolFormat = [];
+                        var dataInSolFormat = [];
                         $.each(data,function(i,v){
-                            var name = v.columnfamily_name;
-                            singleOption = {};
+                            var name = v.keyspace_name;
+                            var singleOption = {};
                             singleOption["type"]="option";
                             singleOption["label"]= name;
                             singleOption["value"] = name;
@@ -48,7 +47,9 @@ var allSelected = false;
                     events:{
                         onChange:function(sol,changedElements){
                             console.log(sol.getSelection());
-                            getColumns(sol.getSelection());
+                            ksName = sol.getSelection()[0].value;
+                            console.log("keyspace selected:"+ksName);
+                            getTbs(sol.getSelection());
 
                         }
                     },
@@ -101,6 +102,57 @@ var allSelected = false;
             }
         });
     });
+    
+    //get all tables in db.test_keyspace 
+    function getTbs(selectedItem){
+        $.ajax({
+            type:"GET",
+            url: serverURL + 'keyspaces/tables?keyspace='+ ksName,
+            success:function(data) {
+                console.log(data);
+                //initialize table select
+                console.log('test a test');
+                
+                //$('#field_select').searchableOptionList();
+                $('#table_selector').empty();
+                $('#table_selector').append('<select id="table_select" name="character"></select>');
+                $('#table_select').searchableOptionList({
+                    //format data for option list
+                    data:function(){
+                        var dataInSolFormat = [];
+                        console.log("hhahahah");
+                        console.log(data);
+                        $.each(data,function(i,v){
+                            var name = v.columnfamily_name;
+                            console.log(name);
+                            tables.set(name, []);
+                            var singleOption = {};
+                            singleOption["type"]="option";
+                            singleOption["label"]= name;
+                            singleOption["value"] = name;
+                            dataInSolFormat.push(singleOption);
+                        });
+                        return dataInSolFormat;
+                    },
+                    //register trigger events
+                    events:{
+                        onChange:function(sol,changedElements){
+                            console.log(sol.getSelection());
+                            getColumns(sol.getSelection());
+
+                        }
+                    },
+                    maxHeight: '150px'
+                });
+            },
+
+            error: function( req, status, err ) {
+                console.log( 'something went wrong', status, err );
+                alert("500: Internal Server Error");
+
+            }
+        }); 
+   }
 
     function getColumns(selectedItems){
         if(selectedItems.length < 1){
@@ -137,7 +189,7 @@ var allSelected = false;
                     });
                     $.ajax({
                         type:"GET",
-                        url:serverURL + 'tables/columns?table='+tablename,
+                        url:serverURL + 'tables/columns?table=' + tablename + '&keyspace=' + ksName,
                         success:function(data) {
                             console.log(data);
                             var cols = data;
@@ -176,7 +228,7 @@ var allSelected = false;
                         tname = tables.get(name);
                         console.log(tname);
                         $.each(tname, function(i, item){
-                            singleOption = {};
+                            var singleOption = {};
                             singleOption["type"]="option";
                             singleOption["label"]= item + " ("+name+")";
                             singleOption["value"] = item;
@@ -190,7 +242,7 @@ var allSelected = false;
                 console.log(tableStr);
                 fieldStr="";
                 var temp = allSelected === true? "*" : fieldStr.substring(0,fieldStr.length -1);
-                var str = "SELECT "+ temp + " FROM "+ ksName + tableStr.substring(0, tableStr.length-1) ;
+                var str = "SELECT "+ temp + " FROM "+ ksName + "." + tableStr.substring(0, tableStr.length-1) ;
                 $("#result").html(str);
                 queryStatement = str+ " ";
                 return dataInSolFormat; 
@@ -204,7 +256,7 @@ var allSelected = false;
                     });
                     console.log(fieldStr);
                     var temp = allSelected === true? "*" : fieldStr.substring(0,fieldStr.length -1);
-                    var str = "SELECT "+ temp + " FROM "+ ksName + tableStr.substring(0, tableStr.length-1);
+                    var str = "SELECT "+ temp + " FROM "+ ksName + "." + tableStr.substring(0, tableStr.length-1);
                     $("#result").html(str);
                     queryStatement = str+ " ";
                 }
